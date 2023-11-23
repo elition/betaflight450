@@ -110,6 +110,10 @@
 
 #include "tasks.h"
 
+#ifdef USE_RPM_LIMIT
+#include "flight/mixer_init.h"
+#endif
+
 // taskUpdateRxMain() has occasional peaks in execution time so normal moving average duration estimation doesn't work
 // Decay the estimated max task duration by 1/(1 << RX_TASK_DECAY_SHIFT) on every invocation
 #define RX_TASK_DECAY_SHIFT 6
@@ -329,6 +333,25 @@ static void taskCameraControl(uint32_t currentTime)
 }
 #endif
 
+#ifdef USE_RPM_LIMIT
+    void rpmCalcLimit(timeUs_t currentTimeUs) {
+        int meClc = 0;
+        UNUSED(currentTimeUs);
+
+        if (rcData[AUX8]>100) {
+            meClc= (int)((rcData[AUX8]-1000)/10);
+            if (meClc < 0) meClc=0;
+            if (meClc > 100) meClc=100;
+            mixerRuntime.rpmLimiterRpmLimit = (int)(mixerConfig()->rpm_limit_min + (mixerConfig()->rpm_limit_max - mixerConfig()->rpm_limit_min)*meClc/100);
+        }
+      //  if (rcData[AUX4]>1500) {
+      //      rpmLimiterRpmLimitEnable = true;
+      //  } else {
+      //      rpmLimiterRpmLimitEnable = false;
+      //  }
+    }
+#endif
+
 #define DEFINE_TASK(taskNameParam, subTaskNameParam, checkFuncParam, taskFuncParam, desiredPeriodParam, staticPriorityParam) {  \
     .taskName = taskNameParam, \
     .subTaskName = subTaskNameParam, \
@@ -453,6 +476,10 @@ task_attribute_t task_attributes[TASK_COUNT] = {
 
 #ifdef USE_RC_STATS
     [TASK_RC_STATS] = DEFINE_TASK("RC_STATS", NULL, NULL, rcStatsUpdate, TASK_PERIOD_HZ(100), TASK_PRIORITY_LOW),
+#endif
+
+#ifdef USE_RPM_LIMIT
+    [TASK_RPM_LIMITER] = DEFINE_TASK("CALC_LIMIT", NULL, NULL, rpmCalcLimit, TASK_PERIOD_HZ(10), TASK_PRIORITY_LOW),
 #endif
 
 };
@@ -629,5 +656,9 @@ void tasksInit(void)
 
 #ifdef USE_RC_STATS
     setTaskEnabled(TASK_RC_STATS, true);
+#endif
+
+#ifdef USE_RPM_LIMIT
+    setTaskEnabled(TASK_RPM_LIMITER, true);
 #endif
 }

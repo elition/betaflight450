@@ -101,7 +101,8 @@ typedef struct mixerConfig_s {
     uint16_t rpm_limit_p;
     uint16_t rpm_limit_i;
     uint16_t rpm_limit_d;
-    uint16_t rpm_limit_value;
+    uint16_t rpm_limit_min;
+    uint16_t rpm_limit_max;
 #endif
 } mixerConfig_t;
 

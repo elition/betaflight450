@@ -179,6 +179,9 @@ typedef enum {
 #ifdef USE_RC_STATS
     TASK_RC_STATS,
 #endif
+#ifdef USE_RPM_LIMIT
+    TASK_RPM_LIMITER,
+#endif
 
     /* Count of real tasks */
     TASK_COUNT,

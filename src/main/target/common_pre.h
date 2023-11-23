@@ -421,3 +421,6 @@
 #endif
 
 #endif // defined(USE_SERIALRX_CRSF)
+
+#define USE_RPM_LIMIT
+#define USE_QUICK_OSD_MENU

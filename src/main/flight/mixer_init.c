@@ -61,7 +61,9 @@ void pgResetFn_mixerConfig(mixerConfig_t *mixerConfig)
     mixerConfig->rpm_limit_p = 25;
     mixerConfig->rpm_limit_i = 10;
     mixerConfig->rpm_limit_d = 8;
-    mixerConfig->rpm_limit_value = 18000;
+    mixerConfig->rpm_limit_min = 18000;
+    mixerConfig->rpm_limit_max = 40000;
+
 #endif
 }
 
@@ -357,7 +359,7 @@ void mixerInitProfile(void)
 #endif
 
 #ifdef USE_RPM_LIMIT
-    mixerRuntime.rpmLimiterRpmLimit = mixerConfig()->rpm_limit_value;
+    mixerRuntime.rpmLimiterRpmLimit = mixerConfig()->rpm_limit_min;
     mixerRuntime.rpmLimiterPGain = mixerConfig()->rpm_limit_p * 15e-6f;
     mixerRuntime.rpmLimiterIGain = mixerConfig()->rpm_limit_i * 1e-3f * pidGetDT();
     mixerRuntime.rpmLimiterDGain = mixerConfig()->rpm_limit_d * 3e-7f * pidGetPidFrequency();
