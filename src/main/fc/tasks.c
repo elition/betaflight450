@@ -338,17 +338,16 @@ static void taskCameraControl(uint32_t currentTime)
         int meClc = 0;
         UNUSED(currentTimeUs);
 
-        if (rcData[AUX8]>100) {
-            meClc= (int)((rcData[AUX8]-1000)/10);
-            if (meClc < 0) meClc=0;
-            if (meClc > 100) meClc=100;
-            mixerRuntime.rpmLimiterRpmLimit = (int)(mixerConfig()->rpm_limit_min + (mixerConfig()->rpm_limit_max - mixerConfig()->rpm_limit_min)*meClc/100);
+        if (RPM_LIMIT_ACTIVE) {
+            if (rcData[AUX4]>1500) {
+                meClc= (int)((rcData[AUX8]-1000)/10);
+                if (meClc < 0) meClc=0;
+                if (meClc > 100) meClc=100;
+                mixerRuntime.rpmLimiterRpmLimit = (int)(mixerConfig()->rpm_limit_min + (mixerConfig()->rpm_limit_max - mixerConfig()->rpm_limit_min)*meClc/100);
+            } else {
+                mixerRuntime.rpmLimiterRpmLimit = mixerConfig()->rpm_limit_max;
+            }
         }
-      //  if (rcData[AUX4]>1500) {
-      //      rpmLimiterRpmLimitEnable = true;
-      //  } else {
-      //      rpmLimiterRpmLimitEnable = false;
-      //  }
     }
 #endif
 
