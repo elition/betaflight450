@@ -21,7 +21,7 @@ git clone https://github.com/betaflight/betaflight.git
 cd betaflight
 make arm_sdk_install
 
-#
+### Сборка
 make FOXEERF722V4
 make FURYF4OSD
 
