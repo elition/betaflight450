@@ -16,7 +16,7 @@ This fork differs from Baseflight and Cleanflight in that it focuses on flight p
 
 See: https://betaflight.com/docs/wiki
 
-### First
+# First
 git clone https://github.com/betaflight/betaflight.git
 cd betaflight
 make arm_sdk_install
